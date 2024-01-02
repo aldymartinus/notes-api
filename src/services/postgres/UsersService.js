@@ -30,25 +30,24 @@ class UsersService {
   async verifyUsername(username) {
     const query = {
       text: 'SELECT username FROM users WHERE username = $1',
-      value: [username],
+      values: [username],
     };
-
     const res = await this._pool.query(query);
 
     if (res.rowCount) {
-      throw new InvariantError('Gagal menambahkan user. Username sudah digunakan');
+      throw new InvariantError('Gagal menambahkan user. Username sudah digunakan.');
     }
   }
 
   async getUserById(userId) {
     const query = {
-      text: 'SELECT id, username, fullname WHERE id = $1',
+      text: 'SELECT * FROM users WHERE id = $1',
       values: [userId],
     };
 
     const res = await this._pool.query(query);
 
-    if (!res.rowCount) throw new InvariantError('User tidak ditemukan');
+    if (!res.rowCount) throw new InvariantError('User tidak ditemukan', 404);
 
     return res.rows[0];
   }
